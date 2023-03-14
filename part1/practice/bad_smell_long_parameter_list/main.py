@@ -9,42 +9,41 @@
 # В этом примере есть сразу несколько запахов плохого кода. Исправьте их
 #   (длинный метод, длинный список параметров)
 
+base_speed = 1
+fly_coeff = 1.2
+crawl_coeff = 0.5
 
 class Unit:
-    def move(self, field, x_coord, y_coord, direction, is_fly, crawl, speed = 1):
+    def __init__(self, state: str, start_field: list, direction):
+        self.state = state
+        self.start_field = start_field
+        self.direction = direction
 
-        if is_fly and crawl:
-            raise ValueError('Рожденный ползать летать не должен!')
+    def _get_speed(self):
+        if self.state == 'fly':
+            self.speed = base_speed * fly_coeff
+        elif self.state == 'crawl':
+            self.speed = base_speed * crawl_coeff
+        else:
+            raise ValueError('unknown state')
+        return self.speed
 
-        if is_fly:
-            speed *= 1.2
-            if direction == 'UP':
-                new_y = y_coord + speed
-                new_x = x_coord
-            elif direction == 'DOWN':
-                new_y = y_coord - speed
-                new_x = x_coord
-            elif direction == 'LEFT':
-                new_y = y_coord
-                new_x = x_coord - speed
-            elif direction == 'RIGTH':
-                new_y = y_coord
-                new_x = x_coord + speed
-        if crawl:
-            speed *= 0.5
-            if direction == 'UP':
-                new_y = y_coord + speed
-                new_x = x_coord
-            elif direction == 'DOWN':
-                new_y = y_coord - speed
-                new_x = x_coord
-            elif direction == 'LEFT':
-                new_y = y_coord
-                new_x = x_coord - speed
-            elif direction == 'RIGTH':
-                new_y = y_coord
-                new_x = x_coord + speed
+    def move(self):
+        speed = self._get_speed()
+        if self.direction == 'up':
+            new_x = self.start_field[0]
+            new_y = self.start_field[1] + speed
+        elif self.direction == 'down':
+            new_x = self.start_field[0]
+            new_y = self.start_field[1] - speed
+        elif self.direction == 'right':
+            new_x = self.start_field[0] + speed
+            new_y = self.start_field[1]
+        elif self.direction == 'left':
+            new_x = self.start_field[0] - speed
+            new_y = self.start_field[1]
 
-            field.set_unit(x=new_x, y=new_y, unit=self)
+        else:
+            raise ValueError('wrong direction')
 
-#     ...
+        return [new_x, new_y]
