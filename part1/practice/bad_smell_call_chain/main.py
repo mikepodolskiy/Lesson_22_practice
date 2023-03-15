@@ -41,6 +41,7 @@ class Person:
     def get_city_population(self):
         return self.city_population
 
+
 city = City()
 room = Room()
 
